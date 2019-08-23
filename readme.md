@@ -34,15 +34,7 @@ $ php artisan passport:install
 ```
 $ php artisan serve
 ```
-###Production
 
-in production mode you should add the following code in  AppServiceProvider :-
-```
-use Illuminate\Support\Facades\Artisan; //at top of class
-```
-```
- Artisan::call('passport:install');//in boot method
-```
 ### Routes
 
     -POST /signup
@@ -53,4 +45,8 @@ use Illuminate\Support\Facades\Artisan; //at top of class
     -GET /users
     -GET /users/{user}/follow
     -GET /users/{user}/unfollow
+    -GET /tweet/{tweet}/like_unlike
+    -GET tweet/{tweet}/isLikedByMe
+    -POST /tweet/{tweet}/comments
+    -DELETE /tweet/delete/{comment}
     -GET /timeline
