@@ -20,14 +20,14 @@ DB_PASSWORD=password
 $ php artisan key:generate
 ```
 
-4. Run migrations
+4.Create client
 ```
-$ php artisan migrate
+$php artisan passport:install
 ```
 
-5. Create client
+5.Run migrations
 ```
-$ php artisan passport:install
+$php artisan migrate
 
 ```
 6. Run server
