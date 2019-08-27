@@ -19,8 +19,18 @@ class LikeController extends Controller
 
     public function like_unlike(Tweet $tweet)
     {
-       $check_like= auth()->user()->isLiking($tweet->id);
-        if(is_null($check_like))
+        $check_like = auth()->user()->isLiking($tweet->id);
+        if($check_like&&is_null($check_like->deleted_at))
+        {
+            $check_like->delete();
+            return response()->json(["message" => "unlike created success", "code" => 200], 200);
+        }
+        elseif($check_like&&$check_like->deleted_at)
+        {
+            $check_like->restore();
+            return response()->json(["message" => "like restore success", "code" => 200], 200);
+        }
+        elseif(is_null($check_like))
         {
             Like::create([
                 'tweet_id' => $tweet->id,
@@ -28,10 +38,5 @@ class LikeController extends Controller
             ]);
             return response()->json(["message" => "like created success", "code" => 200], 200);
         }
-        else {
-                $check_like->delete();
-                return response()->json(["message" => "unlike created success", "code" => 200], 200);
-            }
-
     }
 }

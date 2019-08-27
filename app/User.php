@@ -81,6 +81,6 @@ class User extends Authenticatable
     }
     public function isLiking($tweet_id)
     {
-        return Like::where('tweet_id','=',$tweet_id)->where('user_id','=',auth()->user()->id)->first();
+        return Like::withTrashed()->where('tweet_id','=',$tweet_id)->where('user_id','=',auth()->user()->id)->first();
     }
 }
