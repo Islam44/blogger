@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Like;
+use App\Notifications\LikeNotification;
+use App\Notifications\PressLike;
 use App\Tweet;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\DB;
 
 class LikeController extends Controller
 {
@@ -32,11 +37,19 @@ class LikeController extends Controller
         }
         elseif(is_null($check_like))
         {
-            Like::create([
-                'tweet_id' => $tweet->id,
-                'user_id' => auth()->user()->id
-            ]);
-            return response()->json(["message" => "like created success", "code" => 200], 200);
+            DB::transaction(function() use($tweet){
+                Like::create([
+                    'tweet_id' => $tweet->id,
+                    'user_id' => auth()->user()->id
+               ]);
+            $tweet_who_liked= Tweet::where('id','=',$tweet->id)->first();
+            $user_who_tweet=$tweet_who_liked->user;
+            if($user_who_tweet->id!=auth()->user()->id)
+              {
+                  Notification::send($user_who_tweet, new PressLike(auth()->user(),$tweet_who_liked));
+              }
+            });
+            return response()->json(["message" => "like created success", "code" =>200], 200);
         }
     }
 }
