@@ -69,7 +69,7 @@ class User extends Authenticatable
         return $this;
     }
 
-    public function un_follow($user_id)
+    public function unFollow($user_id)
     {
         $this->follows()->detach($user_id);
         return $this;

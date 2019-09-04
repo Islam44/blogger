@@ -27,11 +27,11 @@ use Illuminate\Http\Request;
         Route::get('users', 'SocialMediaController@index');
         Route::get('users/{user}/follow', 'SocialMediaController@follow',
             function ($user){})->where('user', '[0-9]+');
-        Route::get('users/{user}/unfollow', 'SocialMediaController@un_follow',
+        Route::get('users/{user}/unFollow', 'SocialMediaController@unFollow',
             function ($user){})->where('user', '[0-9]+');
-        Route::get('tweet/{tweet}/like_unlike', 'LikeController@like_unlike',
+        Route::get('tweet/{tweet}/likeUnlike', 'LikeController@likeUnlike',
             function ($tweet){})->where('tweet', '[0-9]+');
-        Route::get('tweet/{tweet}/isLikedByMe', 'LikeController@isLikedByMe',
+        Route::get('tweet/{tweet}/likedByMe', 'LikeController@likedByMe',
             function ($tweet){})->where('tweet', '[0-9]+');
         Route::post('tweet/{tweet}/comments', 'CommentController@store',
             function ($tweet){})->where('tweet', '[0-9]+');
