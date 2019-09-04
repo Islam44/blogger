@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 class LikeController extends Controller
 {
 
-    public function likedByMe(Tweet $tweet)
+    public function likedMe(Tweet $tweet)
     {
         if(Like::where('user_id','=',auth()->user()->id)->where('tweet_id','=',$tweet->id)->exists()) {
             return response()->json(["message" => "true", "code" => 200], 200);

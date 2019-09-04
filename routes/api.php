@@ -31,7 +31,7 @@ use Illuminate\Http\Request;
             function ($user){})->where('user', '[0-9]+');
         Route::get('tweet/{tweet}/likeUnlike', 'LikeController@likeUnlike',
             function ($tweet){})->where('tweet', '[0-9]+');
-        Route::get('tweet/{tweet}/likedByMe', 'LikeController@likedByMe',
+        Route::get('tweet/{tweet}/likedMe', 'LikeController@likedMe',
             function ($tweet){})->where('tweet', '[0-9]+');
         Route::post('tweet/{tweet}/comments', 'CommentController@store',
             function ($tweet){})->where('tweet', '[0-9]+');
