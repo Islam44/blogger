@@ -14,15 +14,15 @@ use Illuminate\Support\Facades\DB;
 class LikeController extends Controller
 {
 
-    public function isLikedByMe(Tweet $tweet)
+    public function likedByMe(Tweet $tweet)
     {
         if(Like::where('user_id','=',auth()->user()->id)->where('tweet_id','=',$tweet->id)->exists()) {
-            return response()->json(["message" => true, "code" => 200], 200);
+            return response()->json(["message" => "true", "code" => 200], 200);
         }
-        return response()->json(["message" => false, "code" => 200], 200);
+        return response()->json(["message" => "false", "code" => 200], 200);
     }
 
-    public function like_unlike(Tweet $tweet)
+    public function likeUnlike(Tweet $tweet)
     {
         $check_like = auth()->user()->isLiking($tweet->id);
         if($check_like&&is_null($check_like->deleted_at))
