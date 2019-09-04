@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
 
 
 class AuthController extends Controller
@@ -17,8 +18,11 @@ class AuthController extends Controller
             [
             'name' => 'required|string',
             'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|confirmed',
-            'image' => 'required|image'
+            'password' => 'required|string|confirmed|min:5|max:255
+                           regex:/[a-z]/|regex:/[A-Z]/|
+                           regex:/[0-9]/|regex:/[@$!%*#?&]/',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:1024
+                        dimensions:min_width=400,min_height=400,ratio=1/1'
             ];
         $validator = Validator::make($request->all(), $rules);
         if($validator->fails())
@@ -30,6 +34,7 @@ class AuthController extends Controller
         $data['email']= $request->email;
         $data['password']= bcrypt($request->password);
         $data['image']= $request->image->store('images');
+
         $user= User::create($data);
         $msg=
             [
@@ -78,6 +83,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->token()->revoke();
+        Cache::forget('feed-tweets');
         return response()->json([
             "message"=> "Successfully logged out"
         ],200);
