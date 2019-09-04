@@ -5,15 +5,15 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Tweet;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
+
 
 class SocialMediaController extends Controller
 {
     public function index()
     {
         $users= User::where('id','!=',auth()->user()->id)->get();
-        return response()->json(["users"=> $users],200);
+        return response()->json(["users"=> $users,"code"=> 200],200);
     }
 
     public function follow(User $user)
@@ -25,25 +25,24 @@ class SocialMediaController extends Controller
         if(!auth()->user()->isFollowing($user->id))
         {
             auth()->user()->follow($user->id);
-            return response()->json(["message" => "You are now following {$user->name}"],200);
+            return response()->json(["message" => "You are now following {$user->name}","code"=> 200],200);
         }
         else return response()->json(["message" => "You are already following {$user->name}","code"=> 401], 401);
     }
 
-    public function un_follow(User $user)
+    public function unFollow(User $user)
     {
         if(auth()->user()->isFollowing($user->id))
         {
-            auth()->user()->un_follow($user->id);
-            return response()->json(["message"=> "You are now unfollow {$user->name}"],200);
+            auth()->user()->unFollow($user->id);
+            return response()->json(["message"=> "You are now unFollow {$user->name}","code"=> 200],200);
         }
         else if(auth()->user()->id== $user->id)
         {
-            return response()->json(["message"=> "You cant unfollow yourself","code"=> 401], 401);
+            return response()->json(["message"=> "You cant unFollow yourself","code"=> 401], 401);
         }
-
         else
-            return response()->json(["message" => "You are already unfollowing {$user->name}","code"=> 401], 401);
+            return response()->json(["message" => "You are already unFollowing {$user->name}","code"=> 401], 401);
 
     }
 
@@ -54,26 +53,17 @@ class SocialMediaController extends Controller
                 ->pluck('follows_id')
                 ->toArray();
             $followsIds[]= auth()->user()->id;
-            $tweets= Tweet::whereIn('user_id', $followsIds)
-                ->latest()
-                ->with('comments')
-                ->with('likes')
-                ->with('user')
-                ->get();
-            $rules= ['per_page' => 'integer|min:5|max:10'];
-            Validator::validate(request()->all(),$rules);
-            $page = LengthAwarePaginator::resolveCurrentPage();
-            $perPage =5;//default
-            if(request()->has('per_page'))
-            {
-                $perPage = (int)request()->per_page;
-            }
-            $results = $tweets->slice(($page - 1) * $perPage,$perPage)->values();
-            $paginated= new LengthAwarePaginator($results, $tweets->count(), $perPage, $page,
-                [
-                'path'=> LengthAwarePaginator::resolveCurrentPath(),
-                ]);
-            $paginated->appends(request()->all());
-            return response()->json(["data"=> $paginated],200);
+            $perPage= 5;
+            $tweets= Cache::remember('feed-tweets',now()->addMinutes(5),function() use($followsIds,$perPage) {
+               return Tweet::whereIn('user_id', $followsIds)
+                    ->latest()
+                    ->limit(10)
+                    ->with('comments')
+                    ->with('likes')
+                    ->with('user')
+                    ->paginate($perPage);
+            });
+
+            return response()->json(["data"=> $tweets,"code"=> 200],200);
         }
 }
