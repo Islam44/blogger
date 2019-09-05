@@ -37,7 +37,8 @@ class CommentController extends Controller
         $data['tweet_id'] =$tweet->id;
         $comment =Comment::create($data);
         return response()->json([
-            "comment"=> $comment
+            "comment"=> $comment,
+            "code"=>200
         ],200);
     }
     /**
