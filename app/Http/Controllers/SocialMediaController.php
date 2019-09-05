@@ -54,7 +54,7 @@ class SocialMediaController extends Controller
                 ->toArray();
             $followsIds[]= auth()->user()->id;
             $perPage= 5;
-            $tweets= Cache::remember('feed-tweets',now()->addMinutes(5),function() use($followsIds,$perPage) {
+            $tweets= Cache::remember('feed-tweets',30/60,function() use($followsIds,$perPage) {
                return Tweet::whereIn('user_id', $followsIds)
                     ->latest()
                     ->limit(10)
