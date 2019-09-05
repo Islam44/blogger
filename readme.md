@@ -46,7 +46,7 @@ $ php artisan serve
     -GET /users/{user}/follow
     -GET /users/{user}/unFollow
     -GET /tweet/{tweet}/likeUnlike
-    -GET /tweet/{tweet}/likedByMe
+    -GET /tweet/{tweet}/likedMe
     -POST /tweet/{tweet}/comments
     -DELETE /tweet/delete/{comment}
     -GET /timeline
