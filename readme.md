@@ -44,9 +44,9 @@ $ php artisan serve
     -RESOURCE /tweets
     -GET /users
     -GET /users/{user}/follow
-    -GET /users/{user}/unfollow
-    -GET /tweet/{tweet}/like_unlike
-    -GET /tweet/{tweet}/isLikedByMe
+    -GET /users/{user}/unFollow
+    -GET /tweet/{tweet}/likeUnlike
+    -GET /tweet/{tweet}/likedByMe
     -POST /tweet/{tweet}/comments
     -DELETE /tweet/delete/{comment}
     -GET /timeline
